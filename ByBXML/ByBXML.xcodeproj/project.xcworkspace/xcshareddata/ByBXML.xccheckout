@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>28E9079B-D53A-492D-B7F2-7C42F440986C</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>852C877873A7C141C122228AF7A89C097F2A2F4F</key>
+		<string>https://github.com/boolkybear/ByBXML</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ByBXML/ByBXML.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>852C877873A7C141C122228AF7A89C097F2A2F4F</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/boolkybear/ByBXML</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>852C877873A7C141C122228AF7A89C097F2A2F4F</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>852C877873A7C141C122228AF7A89C097F2A2F4F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ByBXML</string>
+		</dict>
+	</array>
+</dict>
+</plist>
