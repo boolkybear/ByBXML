@@ -13,11 +13,11 @@
 	ByBInPlaceXMLParserHandler startDocumentHandler;
 	ByBInPlaceXMLParserHandler endDocumentHandler;
 	
-	ByBInPlaceXMLMappingPrefixHandler startMappingPrefixHandler;
-	ByBInPlaceXMLMappingPrefixHandler endMappingPrefixHandler;
+	ByBInPlaceXMLStartMappingPrefixHandler startMappingPrefixHandler;
+	ByBInPlaceXMLEndMappingPrefixHandler endMappingPrefixHandler;
 	
-	ByBInPlaceXMLElementHandler startElementHandler;
-	ByBInPlaceXMLElementHandler endElementHandler;
+	ByBInPlaceXMLStartElementHandler startElementHandler;
+	ByBInPlaceXMLEndElementHandler endElementHandler;
 	
 	ByBInPlaceXMLErrorHandler parseErrorHandler;
 	ByBInPlaceXMLErrorHandler validationErrorHandler;
@@ -30,12 +30,12 @@
 	ByBInPlaceXMLStringHandler foundCommentHandler;
 	ByBInPlaceXMLDataHandler foundCDATAHandler;
 	
-	ByBInPlaceXMLFourStringsHandler foundAttributeDeclarationHandler;
-	ByBInPlaceXMLMappingPrefixHandler foundElementDeclarationHandler;
-	ByBInPlaceXMLThreeStringsHandler foundExternalDeclarationHandler;
-	ByBInPlaceXMLMappingPrefixHandler foundInternalDeclarationHandler;
-	ByBInPlaceXMLFourStringsHandler foundUnparsedDeclarationHandler;
-	ByBInPlaceXMLThreeStringsHandler foundNotationDeclarationHandler;
+	ByBInPlaceXMLAttributeDeclarationHandler foundAttributeDeclarationHandler;
+	ByBInPlaceXMLElementDeclarationHandler foundElementDeclarationHandler;
+	ByBInPlaceXMLExternalDeclarationHandler foundExternalDeclarationHandler;
+	ByBInPlaceXMLInternalDeclarationHandler foundInternalDeclarationHandler;
+	ByBInPlaceXMLUnparsedDeclarationHandler foundUnparsedDeclarationHandler;
+	ByBInPlaceXMLNotationDeclarationHandler foundNotationDeclarationHandler;
 }
 
 - (instancetype) setStartDocumentHandler:(ByBInPlaceXMLParserHandler) handler
@@ -52,28 +52,28 @@
 	return self;
 }
 
-- (instancetype) setStartMappingPrefixHandler:(ByBInPlaceXMLMappingPrefixHandler) handler
+- (instancetype) setStartMappingPrefixHandler:(ByBInPlaceXMLStartMappingPrefixHandler) handler
 {
 	startMappingPrefixHandler = handler;
 	
 	return self;
 }
 
-- (instancetype) setEndMappingPrefixHandler:(ByBInPlaceXMLMappingPrefixHandler) handler
+- (instancetype) setEndMappingPrefixHandler:(ByBInPlaceXMLEndMappingPrefixHandler) handler
 {
 	endMappingPrefixHandler = handler;
 	
 	return self;
 }
 
-- (instancetype) setStartElementHandler:(ByBInPlaceXMLElementHandler) handler
+- (instancetype) setStartElementHandler:(ByBInPlaceXMLStartElementHandler) handler
 {
 	startElementHandler = handler;
 	
 	return self;
 }
 
-- (instancetype) setEndElementHandler:(ByBInPlaceXMLElementHandler) handler
+- (instancetype) setEndElementHandler:(ByBInPlaceXMLEndElementHandler) handler
 {
 	endElementHandler = handler;
 	
@@ -136,42 +136,42 @@
 	return self;
 }
 
-- (instancetype) setFoundAttributeDeclarationHandler:(ByBInPlaceXMLFourStringsHandler) handler
+- (instancetype) setFoundAttributeDeclarationHandler:(ByBInPlaceXMLAttributeDeclarationHandler) handler
 {
 	foundAttributeDeclarationHandler = handler;
 	
 	return self;
 }
 
-- (instancetype) setFoundElementDeclarationHandler:(ByBInPlaceXMLMappingPrefixHandler) handler
+- (instancetype) setFoundElementDeclarationHandler:(ByBInPlaceXMLElementDeclarationHandler) handler
 {
 	foundElementDeclarationHandler = handler;
 	
 	return self;
 }
 
-- (instancetype) setFoundExternalDeclarationHandler:(ByBInPlaceXMLThreeStringsHandler) handler
+- (instancetype) setFoundExternalDeclarationHandler:(ByBInPlaceXMLExternalDeclarationHandler) handler
 {
 	foundExternalDeclarationHandler = handler;
 	
 	return self;
 }
 
-- (instancetype) setFoundInternalDeclarationHandler:(ByBInPlaceXMLMappingPrefixHandler) handler
+- (instancetype) setFoundInternalDeclarationHandler:(ByBInPlaceXMLInternalDeclarationHandler) handler
 {
 	foundInternalDeclarationHandler = handler;
 	
 	return self;
 }
 
-- (instancetype) setFoundUnparsedDeclarationHandler:(ByBInPlaceXMLFourStringsHandler) handler
+- (instancetype) setFoundUnparsedDeclarationHandler:(ByBInPlaceXMLUnparsedDeclarationHandler) handler
 {
 	foundUnparsedDeclarationHandler = handler;
 	
 	return self;
 }
 
-- (instancetype) setFoundNotationDeclarationHandler:(ByBInPlaceXMLThreeStringsHandler) handler
+- (instancetype) setFoundNotationDeclarationHandler:(ByBInPlaceXMLNotationDeclarationHandler) handler
 {
 	foundNotationDeclarationHandler = handler;
 	
@@ -203,7 +203,7 @@
 - (void) parser:(NSXMLParser *)parser didEndMappingPrefix:(NSString *)prefix
 {
 	if(endMappingPrefixHandler != nil)
-		endMappingPrefixHandler(parser, prefix, nil);
+		endMappingPrefixHandler(parser, prefix);
 }
 
 - (void) parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict
@@ -215,7 +215,7 @@
 - (void) parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName
 {
 	if(endElementHandler != nil)
-		endElementHandler(parser, elementName, namespaceURI, qName, nil);
+		endElementHandler(parser, elementName, namespaceURI, qName);
 }
 
 - (void) parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError

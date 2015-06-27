@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		822BDD531B3DB8CD00B93A1D /* ByBXMLInPlaceXMLParserDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 822BDD521B3DB8CD00B93A1D /* ByBXMLInPlaceXMLParserDelegateTests.m */; };
+		822BDD541B3DBC2600B93A1D /* ByBInPlaceXMLParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82CAB2FA1B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.m */; };
 		82CAB2E31B3B235D00103F87 /* ByBXML.h in Headers */ = {isa = PBXBuildFile; fileRef = 82CAB2E21B3B235D00103F87 /* ByBXML.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		82CAB2E91B3B235D00103F87 /* ByBXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CAB2DD1B3B235D00103F87 /* ByBXML.framework */; };
 		82CAB2F01B3B235D00103F87 /* ByBXMLTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 82CAB2EF1B3B235D00103F87 /* ByBXMLTests.m */; };
@@ -25,6 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		822BDD521B3DB8CD00B93A1D /* ByBXMLInPlaceXMLParserDelegateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ByBXMLInPlaceXMLParserDelegateTests.m; sourceTree = "<group>"; };
 		82CAB2DD1B3B235D00103F87 /* ByBXML.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ByBXML.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		82CAB2E11B3B235D00103F87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82CAB2E21B3B235D00103F87 /* ByBXML.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByBXML.h; sourceTree = "<group>"; };
@@ -95,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				82CAB2EF1B3B235D00103F87 /* ByBXMLTests.m */,
+				822BDD521B3DB8CD00B93A1D /* ByBXMLInPlaceXMLParserDelegateTests.m */,
 				82CAB2ED1B3B235D00103F87 /* Supporting Files */,
 			);
 			path = ByBXMLTests;
@@ -173,6 +177,7 @@
 					};
 					82CAB2E71B3B235D00103F87 = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = T54WGTF5F7;
 					};
 				};
 			};
@@ -224,7 +229,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				822BDD531B3DB8CD00B93A1D /* ByBXMLInPlaceXMLParserDelegateTests.m in Sources */,
 				82CAB2F01B3B235D00103F87 /* ByBXMLTests.m in Sources */,
+				822BDD541B3DBC2600B93A1D /* ByBInPlaceXMLParserDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,6 +367,8 @@
 		82CAB2F71B3B235D00103F87 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -371,12 +380,15 @@
 				INFOPLIST_FILE = ByBXMLTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
 		82CAB2F81B3B235D00103F87 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -384,6 +396,7 @@
 				INFOPLIST_FILE = ByBXMLTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -406,6 +419,7 @@
 				82CAB2F51B3B235D00103F87 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		82CAB2F61B3B235D00103F87 /* Build configuration list for PBXNativeTarget "ByBXMLTests" */ = {
 			isa = XCConfigurationList;
@@ -414,6 +428,7 @@
 				82CAB2F81B3B235D00103F87 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
