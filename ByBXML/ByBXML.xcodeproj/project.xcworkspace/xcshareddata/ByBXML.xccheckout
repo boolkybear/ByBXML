@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>28E9079B-D53A-492D-B7F2-7C42F440986C</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>ByBXML</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>852C877873A7C141C122228AF7A89C097F2A2F4F</key>
 		<string>https://github.com/boolkybear/ByBXML</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>ByBXML/ByBXML.xcodeproj/project.xcworkspace</string>
+	<string>ByBXML/ByBXML.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>852C877873A7C141C122228AF7A89C097F2A2F4F</key>

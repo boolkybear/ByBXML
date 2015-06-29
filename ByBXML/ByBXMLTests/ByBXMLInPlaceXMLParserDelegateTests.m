@@ -18,6 +18,12 @@
 static const NSString *kNamespaceKey = @"namespace";
 static const NSString *kQualifiedNameKey = @"qualifiedName";
 static const NSString *kAttributesKey = @"attributes";
+static const NSString *kElementKey = @"element";
+static const NSString *kTypeKey = @"type";
+static const NSString *kDefaultKey = @"default";
+static const NSString *kPublicKey = @"public";
+static const NSString *kSystemKey = @"system";
+static const NSString *kNotationKey = @"notation";
 
 @implementation ByBXMLInPlaceXMLParserDelegateTests
 
@@ -227,10 +233,12 @@ static const NSString *kAttributesKey = @"attributes";
 	
 	__block NSError *parseError = nil;
 	__block NSError *validationError = nil;
-	ByBInPlaceXMLParserDelegate *delegate = [[[[ByBInPlaceXMLParserDelegate alloc] init] setParseErrorHandler:^(NSXMLParser *parser, NSError *error) {
+	ByBInPlaceXMLParserDelegate *delegate = [[[[[ByBInPlaceXMLParserDelegate alloc] init] setParseErrorHandler:^(NSXMLParser *parser, NSError *error) {
 		parseError = error;
 	}] setValidationErrorHandler:^(NSXMLParser *parser, NSError *error) {
 		validationError = error;
+	}] setEndDocumentHandler:^(NSXMLParser *parser) {
+		NSLog(@"Document ended");
 	}];
 	parser.delegate = delegate;
 	
@@ -248,9 +256,13 @@ static const NSString *kAttributesKey = @"attributes";
 {
 	// Reference XML from http://www.vsecurity.com/download/advisories/20140917-1.txt
 	NSString *sampleXML =	@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-							@"<!DOCTYPE roottag ["
+							@"<!DOCTYPE test ["
 								@"<!ENTITY http SYSTEM \"http://iossdk-xxe.apt.vsecurity.org/\">"
 								@"<!ENTITY file SYSTEM \"file:///etc/hosts\">"
+								@"<!ELEMENT test (vsr)>"
+								@"<!ELEMENT vsr (tag1, tag2)>"
+								@"<!ELEMENT tag1 (#PCDATA)>"
+								@"<!ELEMENT tag2 (#PCDATA)>"
 							@"]>"
 							@"<test>"
 								@"<vsr>"
@@ -340,6 +352,164 @@ static const NSString *kAttributesKey = @"attributes";
 	XCTAssert([texts isEqualToArray:textReference]);
 	XCTAssert([blanks isEqualToArray:blanksReference]);
 	XCTAssert([comment isEqualToString:commentReference]);
+}
+
+- (void) testProcessingInstruction {
+	// Reference XML from http://www.w3schools.com/xml/note.xml
+	NSString *sampleXML =	@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+							@"<note>"
+								@"<?author name=\"T. Thomas\" date=\"2015-06-27\"?>"
+								@"<to>Tove</to>"
+								@"<from>Jani</from>"
+								@"<heading>Reminder</heading>"
+								@"<body>Don't forget me this weekend!</body>"
+							@"</note>";
+	NSData *xmlData = [sampleXML dataUsingEncoding:NSUTF8StringEncoding];
+	NSXMLParser *parser = [[NSXMLParser alloc] initWithData:xmlData];
+	
+	NSMutableDictionary *instructions = [NSMutableDictionary new];
+	ByBInPlaceXMLParserDelegate *delegate = [[[ByBInPlaceXMLParserDelegate alloc] init] setFoundProcessingInstructionHandler:^(NSXMLParser *parser, NSString *target, NSString *data) {
+		instructions[target] = data;
+	}];
+	parser.delegate = delegate;
+	
+	BOOL parseOk = [parser parse];
+	XCTAssert(parseOk);
+	
+	NSDictionary *reference = @{ @"author" : @"name=\"T. Thomas\" date=\"2015-06-27\"" };
+	XCTAssert([instructions isEqualToDictionary:reference]);
+}
+
+- (NSDictionary *) dictionaryWithElement:(NSString *)element type:(NSString *)type defaultValue:(NSString *)defaultValue
+{
+	NSMutableDictionary *dict = [NSMutableDictionary new];
+	
+	if(element != nil)
+		dict[kElementKey] = element;
+	if(type != nil)
+		dict[kTypeKey] = type;
+	if(defaultValue != nil)
+		dict[kDefaultKey] = defaultValue;
+	
+	return [dict copy];
+}
+
+- (NSDictionary *) dictionaryWithPublicID:(NSString *)publicID systemID:(NSString *)systemID notation:(NSString *)notation
+{
+	NSMutableDictionary *dict = [NSMutableDictionary new];
+	
+	if(publicID != nil)
+		dict[kPublicKey] = publicID;
+	if(systemID != nil)
+		dict[kSystemKey] = systemID;
+	if(notation != nil)
+		dict[kNotationKey] = notation;
+	
+	return [dict copy];
+}
+
+- (NSDictionary *) dictionaryWithPublicID:(NSString *)publicID systemID:(NSString *)systemID
+{
+	return [self dictionaryWithPublicID:publicID systemID:systemID notation:nil];
+}
+
+- (BOOL) parseData:(NSData *)data resolvingExternalEntities:(BOOL)shouldResolveExternals
+{
+	NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
+	parser.shouldResolveExternalEntities = shouldResolveExternals;
+	
+	NSMutableArray *elements = [NSMutableArray new];
+	NSMutableDictionary *internals = [NSMutableDictionary new];
+	NSMutableDictionary *attributes = [NSMutableDictionary new];
+	NSMutableDictionary *externals = [NSMutableDictionary new];
+	NSMutableDictionary *unparsed = [NSMutableDictionary new];
+	NSMutableDictionary *notations = [NSMutableDictionary new];
+	ByBInPlaceXMLParserDelegate *delegate = [[[[[[[[[ByBInPlaceXMLParserDelegate alloc] init] setResolveExternalHandler:^NSData *(NSXMLParser *parser, NSString *entityName, NSString *systemID) {
+		NSDictionary *entities = @{ @"internal" : [@"Internal entity" dataUsingEncoding:NSUTF8StringEncoding],
+									@"external" : [@"External entity" dataUsingEncoding:NSUTF8StringEncoding],
+									@"parsed" : [@"Parsed entity" dataUsingEncoding:NSUTF8StringEncoding]};
+		
+		return entities[entityName];
+	}] setFoundElementDeclarationHandler:^(NSXMLParser *parser, NSString *element, NSString *model) {
+		[elements addObject:element];
+	}] setFoundAttributeDeclarationHandler:^(NSXMLParser *parser, NSString *attribute, NSString *element, NSString *type, NSString *defaultValue) {
+		NSMutableArray *tags = attributes[attribute] ?: [NSMutableArray new];
+		[tags addObject:[self dictionaryWithElement:element type:type defaultValue:defaultValue]];
+		attributes[attribute] = tags;
+	}] setFoundExternalDeclarationHandler:^(NSXMLParser *parser, NSString *name, NSString *publicID, NSString *systemID) {
+		externals[name] = [self dictionaryWithPublicID:publicID systemID:systemID];
+	}] setFoundInternalDeclarationHandler:^(NSXMLParser *parser, NSString *name, NSString *value) {
+		internals[name] = value ?: [NSNull null];
+	}] setFoundUnparsedDeclarationHandler:^(NSXMLParser *parser, NSString *name, NSString *publicID, NSString *systemID, NSString *notationName) {
+		unparsed[name] = [self dictionaryWithPublicID:publicID systemID:systemID notation:notationName];
+	}] setFoundNotationDeclarationHandler:^(NSXMLParser *parser, NSString *name, NSString *publicID, NSString *systemID) {
+		notations[name] = [self dictionaryWithPublicID:publicID systemID:systemID];
+	}];
+	
+	parser.delegate = delegate;
+	
+	BOOL parseOk = [parser parse];
+	//XCTAssert(parseOk);
+	// parseOk == false, parser.parseError == 111 (XML_ERR_USER_STOP in libxml2)
+	
+	NSArray *elementsReference = @[ @"test", @"vsr", @"tag1", @"tag2", @"tag3" ];
+	NSDictionary *attributesReference = @{ @"internal" : @[	@{ kElementKey : @"tag1",
+															   kTypeKey : @"",
+															   kDefaultKey : @"true" },
+															@{ kElementKey : @"tag2",
+															   kTypeKey : @"",
+															   kDefaultKey : @"false" } ] };
+	NSDictionary *externalsReference = @{ @"parsed" : @{ kSystemKey : @"http://iossdk-xxe.apt.vsecurity.org/" } };
+	NSDictionary *internalsReference = @{ @"internal" : @"Internal string" };
+	NSDictionary *unparsedReference = @{ @"external" : @{ kSystemKey : @"https://devimages.apple.com.edgekey.net/home/images/adp-wordmark.png",
+														  kNotationKey : @"png" } };
+	NSDictionary *notationsReference = @{ @"png" : @{ kSystemKey : @"image/png" } };
+	
+	BOOL elementsOk = [elements isEqualToArray:elementsReference];
+	XCTAssert(elementsOk);
+	BOOL attributesOk = [attributes isEqualToDictionary:attributesReference];
+	XCTAssert(attributesOk);
+	BOOL externalsOk = !shouldResolveExternals || [externals isEqualToDictionary:externalsReference];
+	XCTAssert(externalsOk);
+	BOOL internalsOk = [internals isEqualToDictionary:internalsReference];
+	XCTAssert(internalsOk);
+	BOOL unparsedOk = [unparsed isEqualToDictionary:unparsedReference];
+	XCTAssert(unparsedOk);
+	BOOL notationsOk = [notations isEqualToDictionary:notationsReference];
+	XCTAssert(notationsOk);
+	
+	return (parseOk && elementsOk && attributesOk && externalsOk && internalsOk && unparsedOk && notationsOk);
+}
+
+// This example always fails!
+- (void) testDTD
+{
+	// Reference XML from http://www.vsecurity.com/download/advisories/20140917-1.txt
+	NSString *sampleXML =	@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+							@"<!DOCTYPE test ["
+								@"<!ENTITY external SYSTEM \"https://devimages.apple.com.edgekey.net/home/images/adp-wordmark.png\" NDATA png>"
+								@"<!ENTITY internal \"Internal string\">"
+								@"<!ENTITY parsed SYSTEM \"http://iossdk-xxe.apt.vsecurity.org/\">"
+								@"<!ELEMENT test (vsr)>"
+								@"<!ELEMENT vsr (tag1, tag2, tag3)>"
+								@"<!ELEMENT tag1 (#PCDATA)>"
+								@"<!ELEMENT tag2 (#PCDATA)>"
+								@"<!ELEMENT tag3 (#PCDATA)>"
+								@"<!NOTATION png SYSTEM \"image/png\">"
+								@"<!ATTLIST tag1 internal (true|false) \"true\">"
+								@"<!ATTLIST tag2 internal (true|false) \"false\">"
+							@"]>"
+							@"<test>"
+								@"<vsr>"
+									@"<tag1 internal=\"true\">&internal;</tag1>"
+									@"<tag2>&parsed;</tag2>"
+									@"<tag3>&external;</tag3>"
+								@"</vsr>"
+							@"</test>";
+	NSData *xmlData = [sampleXML dataUsingEncoding:NSUTF8StringEncoding];
+
+	XCTAssert([self parseData:xmlData resolvingExternalEntities:NO]);
+	XCTAssert([self parseData:xmlData resolvingExternalEntities:YES]);
 }
 
 @end

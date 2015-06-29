@@ -268,6 +268,12 @@
 		foundCDATAHandler(parser, CDATABlock);
 }
 
+- (void) parser:(nonnull NSXMLParser *)parser foundAttributeDeclarationWithName:(nonnull NSString *)attributeName forElement:(nonnull NSString *)elementName type:(nullable NSString *)type defaultValue:(nullable NSString *)defaultValue
+{
+	if(foundAttributeDeclarationHandler != nil)
+		foundAttributeDeclarationHandler(parser, attributeName, elementName, type, defaultValue);
+}
+
 - (void) parser:(NSXMLParser *)parser foundElementDeclarationWithName:(NSString *)elementName model:(NSString *)model
 {
 	if(foundElementDeclarationHandler != nil)
