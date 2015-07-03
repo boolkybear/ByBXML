@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		822BDD531B3DB8CD00B93A1D /* ByBXMLInPlaceXMLParserDelegateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 822BDD521B3DB8CD00B93A1D /* ByBXMLInPlaceXMLParserDelegateTests.m */; };
 		822BDD541B3DBC2600B93A1D /* ByBInPlaceXMLParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82CAB2FA1B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.m */; };
+		825AE26A1B473444004E7D6B /* ByBXMLExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825AE2691B473444004E7D6B /* ByBXMLExtensions.swift */; };
 		82CAB2E31B3B235D00103F87 /* ByBXML.h in Headers */ = {isa = PBXBuildFile; fileRef = 82CAB2E21B3B235D00103F87 /* ByBXML.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		82CAB2E91B3B235D00103F87 /* ByBXML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82CAB2DD1B3B235D00103F87 /* ByBXML.framework */; };
 		82CAB2F01B3B235D00103F87 /* ByBXMLTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 82CAB2EF1B3B235D00103F87 /* ByBXMLTests.m */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		822BDD521B3DB8CD00B93A1D /* ByBXMLInPlaceXMLParserDelegateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ByBXMLInPlaceXMLParserDelegateTests.m; sourceTree = "<group>"; };
+		825AE2691B473444004E7D6B /* ByBXMLExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByBXMLExtensions.swift; sourceTree = "<group>"; };
 		82CAB2DD1B3B235D00103F87 /* ByBXML.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ByBXML.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		82CAB2E11B3B235D00103F87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		82CAB2E21B3B235D00103F87 /* ByBXML.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ByBXML.h; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 				82CAB2F91B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.h */,
 				82CAB2FA1B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.m */,
 				82EE0B8C1B45C74E00028322 /* ByBXMLSerializable.swift */,
+				825AE2691B473444004E7D6B /* ByBXMLExtensions.swift */,
 			);
 			path = ByBXML;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				82EE0B8D1B45C74E00028322 /* ByBXMLSerializable.swift in Sources */,
+				825AE26A1B473444004E7D6B /* ByBXMLExtensions.swift in Sources */,
 				82CAB2FC1B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

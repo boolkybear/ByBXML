@@ -11,15 +11,15 @@ import Foundation
 public let ByBEmpty = ""
 public typealias ByBXMLAttributes = [ String : String ]
 
-public enum ByBXMLSerializable
+public enum ByBXMLNode
 {
 	// Can't use simply case String, case Dictionary and case Array, as compiler will give errors
 	case XMLString(String, ByBXMLAttributes?)
-	case XMLDictionary([ String : ByBXMLSerializable ], ByBXMLAttributes?)
-	case XMLArray([ ByBXMLSerializable ], ByBXMLAttributes?)
+	case XMLDictionary([ String : ByBXMLNode ], ByBXMLAttributes?)
+	case XMLArray([ ByBXMLNode ], ByBXMLAttributes?)
 	
-	public subscript(index: Int) -> ByBXMLSerializable? {
-		let array: [ ByBXMLSerializable ]
+	public subscript(index: Int) -> ByBXMLNode? {
+		let array: [ ByBXMLNode ]
 		
 		switch self {
 		case .XMLArray(let xmlArray, _):
@@ -37,7 +37,7 @@ public enum ByBXMLSerializable
 		}
 	}
 	
-	public subscript(key: String) -> ByBXMLSerializable? {
+	public subscript(key: String) -> ByBXMLNode? {
 		switch self {
 		case .XMLDictionary(let xmlDictionary, _):
 			return xmlDictionary[key]
@@ -48,7 +48,7 @@ public enum ByBXMLSerializable
 		}
 	}
 	
-	public func addEntry(node: ByBXMLSerializable, key: String) -> ByBXMLSerializable {
+	public func addEntry(node: ByBXMLNode, key: String) -> ByBXMLNode {
 		switch self {
 		case .XMLArray(_, _):
 			return self
@@ -56,7 +56,7 @@ public enum ByBXMLSerializable
 		case .XMLDictionary(let xmlDictionary, let attributes):
 			if let entry = xmlDictionary[key] {
 				
-				var array: [ ByBXMLSerializable ]
+				var array: [ ByBXMLNode ]
 				
 				switch entry {
 				case .XMLArray(let xmlArray, _):
@@ -84,7 +84,7 @@ public enum ByBXMLSerializable
 		}
 	}
 	
-	public func addString(string: String) -> ByBXMLSerializable {
+	public func addString(string: String) -> ByBXMLNode {
 		switch self {
 		case .XMLArray(_, _): fallthrough
 		case .XMLDictionary(_, _):
@@ -105,4 +105,45 @@ public enum ByBXMLSerializable
 			return ByBEmpty
 		}
 	}
+}
+
+public enum ByBXMLResult {
+	case Error(NSError)
+	case Success(ByBXMLNode)
+}
+
+public struct ByBXMLStack<T> {
+	var stack = [T]()
+	
+	public init() {
+		self.stack = [T]()
+	}
+	
+	public mutating func push(item: T) {
+		self.stack.append(item)
+	}
+	
+	public mutating func pop() -> T? {
+		if self.stack.isEmpty {
+			return nil
+		} else {
+			return self.stack.removeLast()
+		}
+	}
+	
+	public func top() -> T? {
+		return self.stack.last
+	}
+	
+	public mutating func removeAll() {
+		self.stack.removeAll(keepCapacity: false)
+	}
+}
+
+protocol ByBXMLUnserializable {
+	func unserializeXML(handler: (ByBXMLResult) -> Void)
+}
+
+protocol ByBXMLSerializable {
+	func serializeXML() -> ByBXMLNode
 }
