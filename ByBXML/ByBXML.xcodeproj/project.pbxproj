@@ -16,6 +16,8 @@
 		82CAB2FB1B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 82CAB2F91B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		82CAB2FC1B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82CAB2FA1B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.m */; };
 		82EE0B8D1B45C74E00028322 /* ByBXMLSerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EE0B8C1B45C74E00028322 /* ByBXMLSerializable.swift */; };
+		A7AF8A4A1B497A7800BBB715 /* ByBXMLExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF8A491B497A7800BBB715 /* ByBXMLExtensionsTests.swift */; };
+		A7F20CE61B48674800E8267C /* ByBXMLSerializableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F20CE51B48674800E8267C /* ByBXMLSerializableTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +42,9 @@
 		82CAB2F91B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ByBInPlaceXMLParserDelegate.h; sourceTree = "<group>"; };
 		82CAB2FA1B3B23BC00103F87 /* ByBInPlaceXMLParserDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ByBInPlaceXMLParserDelegate.m; sourceTree = "<group>"; };
 		82EE0B8C1B45C74E00028322 /* ByBXMLSerializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByBXMLSerializable.swift; sourceTree = "<group>"; };
+		A7AF8A491B497A7800BBB715 /* ByBXMLExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByBXMLExtensionsTests.swift; sourceTree = "<group>"; };
+		A7F20CE41B48674700E8267C /* ByBXMLTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ByBXMLTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		A7F20CE51B48674800E8267C /* ByBXMLSerializableTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByBXMLSerializableTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +110,10 @@
 			children = (
 				82CAB2EF1B3B235D00103F87 /* ByBXMLTests.m */,
 				822BDD521B3DB8CD00B93A1D /* ByBXMLInPlaceXMLParserDelegateTests.m */,
+				A7F20CE51B48674800E8267C /* ByBXMLSerializableTests.swift */,
+				A7AF8A491B497A7800BBB715 /* ByBXMLExtensionsTests.swift */,
 				82CAB2ED1B3B235D00103F87 /* Supporting Files */,
+				A7F20CE41B48674700E8267C /* ByBXMLTests-Bridging-Header.h */,
 			);
 			path = ByBXMLTests;
 			sourceTree = "<group>";
@@ -238,7 +246,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7F20CE61B48674800E8267C /* ByBXMLSerializableTests.swift in Sources */,
 				822BDD531B3DB8CD00B93A1D /* ByBXMLInPlaceXMLParserDelegateTests.m in Sources */,
+				A7AF8A4A1B497A7800BBB715 /* ByBXMLExtensionsTests.swift in Sources */,
 				82CAB2F01B3B235D00103F87 /* ByBXMLTests.m in Sources */,
 				822BDD541B3DBC2600B93A1D /* ByBInPlaceXMLParserDelegate.m in Sources */,
 			);
@@ -381,6 +391,7 @@
 		82CAB2F71B3B235D00103F87 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -395,12 +406,15 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "ByBXMLTests/ByBXMLTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		82CAB2F81B3B235D00103F87 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -411,6 +425,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "ByBXMLTests/ByBXMLTests-Bridging-Header.h";
 			};
 			name = Release;
 		};

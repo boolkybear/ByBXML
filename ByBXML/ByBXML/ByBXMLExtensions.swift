@@ -8,8 +8,15 @@
 
 import Foundation
 
+public let ByBXMLErrorDomain = "ByBXMLErrorDomain"
+public enum ByBXMLErrorDomainErrorCodes: Int {
+	case EmptyXML = 1
+	case NSXMLParserError = 2
+	case NoValidEncodingFound = 3
+}
+
 extension NSXMLParser: ByBXMLUnserializable {
-	func unserializeXML(handler: (ByBXMLResult) -> Void) {
+	public func unserializeXML(handler: (ByBXMLResult) -> Void) {
 
 		self.shouldProcessNamespaces = false
 		self.shouldResolveExternalEntities = false
@@ -28,13 +35,15 @@ extension NSXMLParser: ByBXMLUnserializable {
 					}
 				}
 				
-				stack.push(ByBXMLNode.XMLString(ByBEmpty, stringAttributes))
+				stack.push(ByBXMLNode.XMLValue(elementName, stringAttributes, ByBEmpty))
 				}.setEndElementHandler {
 					_, elementName, _,	qualifiedName in
 					
 					if let node = stack.pop() {
 						if let parent = stack.pop() {
 							stack.push(parent.addEntry(node, key: elementName))
+						} else {
+							stack.push(node)	// root node
 						}
 					}
 				}.setFoundCharactersHandler {
@@ -60,10 +69,10 @@ extension NSXMLParser: ByBXMLUnserializable {
 				if let top = stack.top() {
 					handler(ByBXMLResult.Success(top))
 				} else {
-					handler(ByBXMLResult.Error(NSError()))	// TODO: empty stack
+					handler(ByBXMLResult.Error(NSError(domain: ByBXMLErrorDomain, code: ByBXMLErrorDomainErrorCodes.EmptyXML.rawValue, userInfo: nil)))
 				}
 			} else {
-				handler(ByBXMLResult.Error(self.parserError ?? NSError()))
+				handler(ByBXMLResult.Error(self.parserError ?? NSError(domain: ByBXMLErrorDomain, code: ByBXMLErrorDomainErrorCodes.NSXMLParserError.rawValue, userInfo: nil)))
 			}
 		
 			stack.removeAll()
@@ -72,31 +81,39 @@ extension NSXMLParser: ByBXMLUnserializable {
 }
 
 extension NSData: ByBXMLUnserializable {
-	func unserializeXML(handler: (ByBXMLResult) -> Void) {
+	public func unserializeXML(handler: (ByBXMLResult) -> Void) {
 		let parser = NSXMLParser(data: self)
 		
 		parser.unserializeXML(handler)
 	}
 }
 
-extension String: ByBXMLUnserializable {
-	func unserializeXML(handler: (ByBXMLResult) -> Void) {
-		let objcString = NSString(string: self)
+extension NSString: ByBXMLUnserializable {
+	public func unserializeXML(handler: (ByBXMLResult) -> Void) {
 		let supportedEncodings = [ NSUTF8StringEncoding ]
 		
 		for encoding in supportedEncodings {
 			if let data = self.dataUsingEncoding(encoding, allowLossyConversion: false) {
 				data.unserializeXML(handler)
-				break
+				
+				return
 			}
 		}
 		
-		handler(ByBXMLResult.Error(NSError()))	// TODO: no valid encoding
+		handler(ByBXMLResult.Error(NSError(domain: ByBXMLErrorDomain, code: ByBXMLErrorDomainErrorCodes.NoValidEncodingFound.rawValue, userInfo: nil)))
+	}
+}
+
+extension String: ByBXMLUnserializable {
+	public func unserializeXML(handler: (ByBXMLResult) -> Void) {
+		let objcString = NSString(string: self)
+		
+		objcString.unserializeXML(handler)
 	}
 }
 
 extension NSInputStream: ByBXMLUnserializable {
-	func unserializeXML(handler: (ByBXMLResult) -> Void) {
+	public func unserializeXML(handler: (ByBXMLResult) -> Void) {
 		let parser = NSXMLParser(stream: self)
 		
 		parser.unserializeXML(handler)
