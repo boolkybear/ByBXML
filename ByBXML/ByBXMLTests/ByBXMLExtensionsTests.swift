@@ -47,7 +47,7 @@ class ByBXMLExtensionsTests: XCTestCase {
 			result in
 			
 			switch result {
-			case .Error(let error):
+			case .Error(_):
 				XCTFail("Result error")
 				
 			case .Success(let root):
@@ -91,7 +91,7 @@ class ByBXMLExtensionsTests: XCTestCase {
 			result in
 			
 			switch result {
-			case .Error(let error):
+			case .Error(_):
 				XCTFail("Result error")
 				
 			case .Success(let root):
@@ -112,6 +112,164 @@ class ByBXMLExtensionsTests: XCTestCase {
 			
 			if let _ = error {
 				XCTFail("Parse error")
+			}
+		}
+	}
+	
+	func testNSDataExtension() {
+		if let dataXML =	("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+							"<root xmlns:h=\"http://www.w3.org/TR/html4/\">" +
+								"<h:table>" +
+									"<h:tr>" +
+										"<h:td>Apples</h:td>" +
+									"</h:tr>" +
+								"</h:table>" +
+			"</root>").dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
+		
+				let expectation = expectationWithDescription("Parsing")
+				dataXML.unserializeXML {
+					result in
+					
+					switch result {
+					case .Error(_):
+						XCTFail("Result error")
+						
+					case .Success(let root):
+						let reference = ByBXMLNode.XMLDictionary("root", [	"xmlns:h" : "http://www.w3.org/TR/html4/" ],
+							[	"h:table" : ByBXMLNode.XMLDictionary("h:table", nil, [ "h:tr" : ByBXMLNode.XMLDictionary("h:tr", nil, [ "h:td" : ByBXMLNode.XMLValue("h:td", nil, "Apples") ]) ]) ])
+						XCTAssert(root == reference)
+					}
+					
+					expectation.fulfill()
+				}
+				
+				waitForExpectationsWithTimeout(5.0) {
+					error in
+					
+					if let _ = error {
+						XCTFail("Parse error")
+					}
+				}
+		} else {
+			XCTFail("Data error")
+		}
+	}
+	
+	func testNSInputStreamExtension() {
+		if let dataXML =	("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+			"<root xmlns:h=\"http://www.w3.org/TR/html4/\">" +
+			"<h:table>" +
+			"<h:tr>" +
+			"<h:td>Apples</h:td>" +
+			"</h:tr>" +
+			"</h:table>" +
+			"</root>").dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
+				
+				let inputStream = NSInputStream(data: dataXML)
+				
+				let expectation = expectationWithDescription("Parsing")
+				inputStream.unserializeXML {
+					result in
+					
+					switch result {
+					case .Error(_):
+						XCTFail("Result error")
+						
+					case .Success(let root):
+						let reference = ByBXMLNode.XMLDictionary("root", [	"xmlns:h" : "http://www.w3.org/TR/html4/" ],
+							[	"h:table" : ByBXMLNode.XMLDictionary("h:table", nil, [ "h:tr" : ByBXMLNode.XMLDictionary("h:tr", nil, [ "h:td" : ByBXMLNode.XMLValue("h:td", nil, "Apples") ]) ]) ])
+						XCTAssert(root == reference)
+					}
+					
+					expectation.fulfill()
+				}
+				
+				waitForExpectationsWithTimeout(5.0) {
+					error in
+					
+					if let _ = error {
+						XCTFail("Parse error")
+					}
+				}
+		} else {
+			XCTFail("Data error")
+		}
+	}
+	
+	func testNSXMLParserExtension() {
+		if let dataXML =	("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+			"<root xmlns:h=\"http://www.w3.org/TR/html4/\">" +
+			"<h:table>" +
+			"<h:tr>" +
+			"<h:td><![CDATA[Apples]]></h:td>" +
+			"</h:tr>" +
+			"</h:table>" +
+			"</root>").dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
+				
+				let inputStream = NSInputStream(data: dataXML)
+				let parser = NSXMLParser(stream: inputStream)
+				
+				let expectation = expectationWithDescription("Parsing")
+				parser.unserializeXML {
+					result in
+					
+					switch result {
+					case .Error(_):
+						XCTFail("Result error")
+						
+					case .Success(let root):
+						let reference = ByBXMLNode.XMLDictionary("root", [	"xmlns:h" : "http://www.w3.org/TR/html4/" ],
+							[	"h:table" : ByBXMLNode.XMLDictionary("h:table", nil, [ "h:tr" : ByBXMLNode.XMLDictionary("h:tr", nil, [ "h:td" : ByBXMLNode.XMLValue("h:td", nil, "Apples") ]) ]) ])
+						XCTAssert(root == reference)
+					}
+					
+					expectation.fulfill()
+				}
+				
+				waitForExpectationsWithTimeout(5.0) {
+					error in
+					
+					if let _ = error {
+						XCTFail("Parse error")
+					}
+				}
+		} else {
+			XCTFail("Data error")
+		}
+	}
+	
+	// Errors
+	
+	func testParseError() {
+		let errorXML =	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+						"<note>" +
+							"<to>Tove</to>" +
+							"<from>Jani</from>" +
+							"<heading>Reminder" +	// <-- removed closing heading tag
+							"<body>Don't forget me this weekend!</body>" +
+						"</note>"
+		
+		let expectation = expectationWithDescription("Parsing")
+		errorXML.unserializeXML {
+			result in
+			
+			switch result {
+			case .Error(let error):
+				XCTAssert(error.domain == NSXMLParserErrorDomain)
+				XCTAssert(error.code == NSXMLParserError.TagNameMismatchError.rawValue)
+				
+			case .Success(_):
+				XCTFail("There's an error in the XML")
+			}
+			
+			expectation.fulfill()
+		}
+		
+		waitForExpectationsWithTimeout(5.0) {
+			error in
+			
+			if let _ = error {
+				XCTFail("Expectation error")
 			}
 		}
 	}

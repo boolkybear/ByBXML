@@ -152,7 +152,8 @@ public enum ByBXMLNode
 	}
 	
 	func startTagWith(name: String, attributes: ByBXMLAttributes?) -> String {
-		let elements = join(" ", [name] + arrayFromAttributes(attributes))
+		//let elements = join(" ", [name] + arrayFromAttributes(attributes))
+		let elements = " ".join([name] + arrayFromAttributes(attributes))
 		
 		return "<\(elements)>"
 	}
@@ -167,11 +168,12 @@ public enum ByBXMLNode
 			return "\(startTagWith(name, attributes: attributes))\(value)\(endTagWith(name))"
 			
 		case .XMLArray(let xmlArray):
-			return join("", xmlArray.map { $0.xml })
+			//return join("", xmlArray.map { $0.xml })
+			return xmlArray.map { $0.xml }.reduce("", combine: +)
 			
 		case .XMLDictionary(let name, let attributes, let xmlDict):
 			var value = ""
-			for (xmlKey, xmlValue) in xmlDict {
+			for (_, xmlValue) in xmlDict {
 				value += xmlValue.xml
 			}
 			return "\(startTagWith(name, attributes: attributes))\(value)\(endTagWith(name))"
@@ -220,7 +222,7 @@ public protocol ByBXMLUnserializable {
 //	public func serializeXML() -> ByBXMLNode
 //}
 
-func areEqual (lhs: ByBXMLAttributes?, rhs: ByBXMLAttributes?) -> Bool {
+func areEqual (lhs: ByBXMLAttributes?, _ rhs: ByBXMLAttributes?) -> Bool {
 	switch (lhs, rhs) {
 	case (.None, .None):
 		return true

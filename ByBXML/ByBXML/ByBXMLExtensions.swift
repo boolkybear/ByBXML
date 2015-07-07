@@ -24,6 +24,7 @@ extension NSXMLParser: ByBXMLUnserializable {
 		
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
 			var stack = ByBXMLStack<ByBXMLNode>()
+			var lastError: NSError? = nil
 			
 			let xmlDelegate = ByBInPlaceXMLParserDelegate().setStartElementHandler {
 				_, elementName, _, qualifiedName, attributes in
@@ -62,6 +63,10 @@ extension NSXMLParser: ByBXMLUnserializable {
 							stack.push(node.addString(value as String))
 						}
 					}
+				}.setParseErrorHandler{
+					_, error in
+				
+					lastError = error.copy() as? NSError
 			}
 			
 			self.delegate = xmlDelegate
@@ -72,7 +77,7 @@ extension NSXMLParser: ByBXMLUnserializable {
 					handler(ByBXMLResult.Error(NSError(domain: ByBXMLErrorDomain, code: ByBXMLErrorDomainErrorCodes.EmptyXML.rawValue, userInfo: nil)))
 				}
 			} else {
-				handler(ByBXMLResult.Error(self.parserError ?? NSError(domain: ByBXMLErrorDomain, code: ByBXMLErrorDomainErrorCodes.NSXMLParserError.rawValue, userInfo: nil)))
+				handler(ByBXMLResult.Error(lastError ?? self.parserError ?? NSError(domain: ByBXMLErrorDomain, code: ByBXMLErrorDomainErrorCodes.NSXMLParserError.rawValue, userInfo: nil)))
 			}
 		
 			stack.removeAll()
